@@ -1,4 +1,6 @@
-import 'dotenv/config';
+// import 'dotenv/config';
+import dotenv from 'dotenv';
+dotenv.config();
 import express from 'express';
 import charactersRoute from './routes/characters.route.js';
 import apiRoute from './api/routes/routes.api.js';
