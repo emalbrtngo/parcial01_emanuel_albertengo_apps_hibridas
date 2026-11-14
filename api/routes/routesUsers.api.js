@@ -6,6 +6,8 @@ const router = Router();
 router.get('/api/users', usersController.getUsers); 
 router.post('/api/users', usersController.createUser);
 router.get('/api/users/:id/personajes', usersController.getUserCharacters);
+router.get('/api/users/:id/comentarios', usersController.getUserComments);
+router.delete('/api/users/comentarios/:commentId', usersController.deleteUserComment);
 
 
 

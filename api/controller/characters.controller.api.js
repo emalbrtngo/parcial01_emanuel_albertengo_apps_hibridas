@@ -1,4 +1,3 @@
-// mongodb+srv://admin:admin@dwm4av.wrlj6eo.mongodb.net/
 import * as characterHpService from '../../services/charactersHpServices.js'
 
 export async function getCharacters(req, res) {
@@ -81,6 +80,20 @@ export async function updateCharacter(req, res) {
         }
 
     } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+}
+
+export async function saveCharacterComment(req, res) {
+    try{
+        const id = req.params.id;
+        const character = await characterHpService.saveCharacterCommentById(id, req.body);
+        if(character) {
+            res.status(200).json(character);
+        } else {
+            res.status(404).json({ error: 'Personaje no encontrado.' });
+        }
+    }catch (error) {
         res.status(500).json({ error: error.message });
     }
 }

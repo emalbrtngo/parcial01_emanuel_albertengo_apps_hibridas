@@ -1,8 +1,7 @@
-import {MongoClient} from 'mongodb';
+// import {MongoClient} from 'mongodb';
 import 'dotenv/config';
+import client from './client.js'
 
-const MONGO_URI = process.env.MONGO_URI;
-const client = new MongoClient(MONGO_URI);
-const db = client.db('AH20232CP1');
+const db = client.db('AH20232CP1')
 
-export default db;
+export default db

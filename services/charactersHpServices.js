@@ -1,8 +1,7 @@
 // import { readFile } from 'fs/promises';
-
 import { ObjectId } from 'mongodb';
 import db from '../config/db.js';
-
+import { saveCharacterComment } from './commentsServices.js';
 
 export async function getCharacters(filtros = {}) {
 
@@ -125,4 +124,19 @@ export async function getPersonajesPorUsuario(userId) {
     } catch (error) {
         throw new Error('Error al obtener los personajes del usuario');
     }
+}
+
+export async function characterExists(id) {
+    const count = await db.collection('hp_characters')
+        .countDocuments({ _id: new ObjectId(id), eliminado: { $ne: true } })
+    return count > 0
+}
+
+export async function saveCharacterCommentById(id, usuario) {
+    // _id
+    // nombre/email
+    // comentario
+    const character = await getCharacterById(id)
+    const characterComment = await saveCharacterComment(character._id, usuario)
+    return characterComment
 }

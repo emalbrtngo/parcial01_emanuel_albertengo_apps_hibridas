@@ -1,4 +1,4 @@
-import * as charactersHpController from '../controllers/charactersHpController.js';
+import * as charactersHpController from '../controllers/characters.controller.js';
 import { Router } from 'express';
 
 const router = Router();
