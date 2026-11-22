@@ -4,10 +4,12 @@ dotenv.config();
 import express from 'express';
 import charactersRoute from './routes/characters.route.js';
 import apiRoute from './api/routes/routes.api.js';
-import usersRoute from './api/routes/routesUsers.api.js';   
+import usersRoute from './api/routes/routesUsers.api.js';
+import cors from 'cors';
 const app = express();
 const port = 3333;
 
+app.use(cors()); //habilitar CORS  por ahora cualquiera puede hacer consultas
 app.use('/', express.static('public')); //archivos estáticos desde la carpeta 'public'
 app.use( express.urlencoded({ extended: true })) //para que express entienda datos de formularios
 app.use(express.json()); //express entendera json

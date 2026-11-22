@@ -21,7 +21,7 @@ export async function getCharacterById(req, res){
 
 export async function saveCharacter(req, res) {
     try {
-        const newCharacter = await characterHpService.saveCharacter(req.body);
+        const newCharacter = await characterHpService.createCharacter(req.body);
         if (newCharacter) {
             res.status(201).json(newCharacter);
         } else {
@@ -48,39 +48,11 @@ export async function deleteCharacter(req, res) {
 
 export async function updateCharacter(req, res) {
     try {
-        const { id } = req.params;
-        const character = await characterHpService.getCharacterById(id);
-        req.body = {
-        "name": req.body.name ?? character?.name,
-        "species": req.body.species ?? character?.species,
-        "gender": req.body.gender ?? character?.gender,
-        "house": req.body.house ?? character?.house,
-        "dateOfBirth": req.body.dateOfBirth ?? character?.dateOfBirth,
-        "yearOfBirth": req.body.yearOfBirth ?? character?.yearOfBirth,
-        "ancestry": req.body.ancestry ?? character?.ancestry,
-        "eyeColour": req.body.eyeColour ?? character?.eyeColour,
-        "hairColour": req.body.hairColour ?? character?.hairColour,
-        "wand": {
-            "wood": req.body.wand?.wood ?? character?.wand?.wood,
-            "core": req.body.wand?.core ?? character?.wand?.core,
-            "length": req.body.wand?.length ?? character?.wand?.length,
-        },
-        "patronus": req.body.patronus ?? character?.patronus,
-        "hogwartsStudent": req.body.hogwartsStudent ?? character?.hogwartsStudent,
-        "hogwartsStaff": req.body.hogwartsStaff ?? character?.hogwartsStaff,
-        "actor": req.body.actor ?? character?.actor,
-        "alive": req.body.alive ?? character?.alive,
-        "image": req.body.image ?? character?.image
-        };
-        const updatedCharacter = await characterHpService.saveCharacter(req.body);
-        if (updatedCharacter) {
-            res.status(200).json(updatedCharacter);
-        } else {
-            res.status(404).json({ error: 'Personaje no encontrado.' });
-        }
-
+        const character = await characterHpService.updateCharacter(req.params.id, req.body)
+        if (!character) return res.status(404).json({ error: 'Personaje no encontrado' })
+        res.status(200).json(character)
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(500).json({ error: error.message })
     }
 }
 

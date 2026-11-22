@@ -6,8 +6,9 @@ export async function getUsers() {
 }
 
 export async function createUser(user) {
-    const newUser = await db.collection('users').insertOne(user);
-    return { _id: newUser.insertedId, ...user };
+    const userWithRol = { ...user, rol: "user" }
+    const newUser = await db.collection('users').insertOne(userWithRol);
+    return { _id: newUser.insertedId, ...userWithRol };
 }
 
 export async function userExists(id) {
@@ -18,4 +19,11 @@ export async function userExists(id) {
 
 export async function getUserById(id) {
     return await db.collection('users').findOne({ _id: new ObjectId(id) });
+}
+
+export async function setUserRol(id, rol) {
+    await db.collection('users').updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { rol } }
+    );
 }

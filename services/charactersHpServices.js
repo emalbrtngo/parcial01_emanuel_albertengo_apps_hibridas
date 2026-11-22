@@ -57,33 +57,57 @@ export async function getCharacterById(id) {
     }
 }
 
-export async function saveCharacter(character){
-    try {
 
-        console.log('Guardando personaje:', character);
-        character.customCharacter = true;
-        const existingCharacter = await db.collection('hp_characters').findOne({ name: character.name });
-        if (existingCharacter) {
-            console.log('Actualizando personaje existente:', character);
-            await db.collection('hp_characters').updateOne(
-                { _id: existingCharacter._id }, //primero filtro, luego el operador $set
-                { $set: character }
-            );
-            return character;
-        } else {
-            // personajes.push(character);
-            await db.collection('hp_characters').insertOne(character);
-            console.log('Creando nuevo personaje:', character);
-            
-            return character;
-        }
-
-        //Logica para guardar el personaje en la bbds cuando exista en mongodb
+export async function createCharacter(character) {
+    const nuevo = { ...character, customCharacter: true }
+    try{
+        const res = await db.collection('hp_characters').insertOne(nuevo)
+        return { _id: res.insertedId, ...nuevo }
     } catch (error) {
-        throw new Error('Error al guardar el personaje');
-        
+        console.error(error);
+        throw new Error('Error al crear el personaje');
     }
-} 
+}
+
+export async function updateCharacter(id, character) {
+    const { _id, ...datos } = character         
+    const res = await db.collection('hp_characters').updateOne(
+        { _id: new ObjectId(id), eliminado: { $ne: true } },
+        { $set: datos }
+    )
+    if (res.matchedCount === 0) return null      // el controller responde 404
+    return { _id: id, ...datos }
+}
+
+//no sirve mas-- mejor separa actualizar y crear
+// export async function saveCharacter(character){ 
+//     try {
+
+//         console.log('Guardando personaje:', character);
+//         character.customCharacter = true;
+//         const existingCharacter = await db.collection('hp_characters').findOne({ name: character.name });
+//         if (existingCharacter) {
+//             console.log('Actualizando personaje existente:', character);
+//             await db.collection('hp_characters').updateOne(
+//                 { _id: existingCharacter._id }, //primero filtro, luego el operador $set
+//                 { $set: character }
+//             );
+//             return character;
+//         } else {
+//             // personajes.push(character);
+//             const newUserWithRoleUser = { ...character, rol: "user" } 
+//             await db.collection('hp_characters').insertOne(newUserWithRoleUser);
+//             console.log('Creando nuevo personaje:', newUserWithRoleUser);
+            
+//             return newUserWithRoleUser;
+//         }
+
+//         //Logica para guardar el personaje en la bbds cuando exista en mongodb
+//     } catch (error) {
+//         throw new Error('Error al guardar el personaje');
+        
+//     }
+// } 
 
 export async function deleteCharacterById(id){
     try {
