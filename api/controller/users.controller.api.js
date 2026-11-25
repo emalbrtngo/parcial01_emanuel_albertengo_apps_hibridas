@@ -5,7 +5,7 @@ import * as commentsServices from '../../services/commentsServices.js';
 
 export async function getUsers(req, res) {
     try {
-        const users = await usersServices.getUsers();
+        const users = await usersServices.getUsers(req.query);
         res.json(users);
     } catch (error) {
         res.status(500).json({ error: 'No se pudieron obtener los usuarios' });
@@ -30,29 +30,37 @@ export async function getUserCharacters(req, res) {
     }
 }
 
-export async function getUserComments(req, res) {
+export async function deleteUser(req, res) {
     try {
-        const id = req.params.id;
-        const user = await usersServices.getUserById(id);
-        if(!user) {
-            return res.status(404).json({ error: 'Usuario no encontrado' });
-        }
-        res.status(200).json(user?.comments || []);
+        const { id } = req.params
+        const deleted = await usersServices.deleteUser(id)
+        if (!deleted) return res.status(404).json({ error: 'Usuario no encontrado' })
+        res.status(200).json({ message: 'Usuario eliminado' })
     } catch (error) {
-        res.status(500).json({ error: 'No se pudieron obtener los comentarios del usuario' });
+        res.status(500).json({ error: 'No se pudo eliminar el usuario' })
     }
 }
 
-export async function deleteUserComment(req, res) {
+export async function login(req, res) {
     try {
-        const commentId = req.params.commentId;
-        if (!commentId) {
-            return res.status(400).json({ error: 'Falta el ID del comentario' });
-        }
-        await commentsServices.deleteCommentById(commentId);
-        res.status(200).json({ message: 'Comentario eliminado correctamente' });
+        const user = await usersServices.login(req.body)
+        if (!user) return res.status(401).json({ message: 'Usuario o contraseña incorrectos' })
+        res.status(200).json(user)
     } catch (error) {
-        res.status(500).json({ error: 'No se pudo eliminar el comentario del usuario' });
+        res.status(500).json({ error: 'No se pudo iniciar sesión' })
+    }
+}
+
+export async function changeRol(req, res) {
+    try {
+        const { id } = req.params
+        if (id === req.user._id) return res.status(400).json({ error: 'No podés cambiar tu propio rol' })
+
+        const updated = await usersServices.changeRol(id, req.body.rol)
+        if (!updated) return res.status(404).json({ error: 'Usuario no encontrado' })
+        res.status(200).json({ message: 'Rol actualizado', rol: req.body.rol })
+    } catch (error) {
+        res.status(500).json({ error: 'No se pudo cambiar el rol' })
     }
 }
 

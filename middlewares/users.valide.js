@@ -1,4 +1,4 @@
-import { userRegisterSchema, userLoginSchema }  from "../schemas/users.js"
+import { userRegisterSchema, userLoginSchema, userRolSchema }  from "../schemas/users.js"
 
 export async function validateUserRegister(req, res, next){
     try {
@@ -20,4 +20,13 @@ export async function validateUserLogin(req, res, next){
         return res.status(400).json({ error: error.message })
     }
     next()
+}
+
+export async function validateUserRol(req, res, next) {
+    try {
+        req.body = await userRolSchema.parseAsync(req.body)
+        next()
+    } catch (errors) {
+        res.status(400).json(errors?.issues?.map(e => e.message))
+    }
 }

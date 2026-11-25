@@ -15,10 +15,14 @@ export const userRegisterSchema = z.object({
 }, "Objeto inválido")
     .refine((data) => data.password === data.passwordConfirm, {
         error: "Las contraseñas no coinciden",
-        path: ["passwordConfirm"],   // el error aparece en errors.passwordConfirm
+        path: ["passwordConfirm"],  
     })
 
 export const userLoginSchema = z.object({
     email: z.email("Ingresá un email válido"),
     password: z.string("Ingresá tu contraseña").min(1, "Ingresá tu contraseña"),
 }, "Objeto inválido")
+
+export const userRolSchema = z.object({
+    rol: z.enum(["user", "admin"], "El rol debe ser user o admin"),
+})

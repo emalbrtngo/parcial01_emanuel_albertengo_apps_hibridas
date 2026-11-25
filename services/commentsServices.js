@@ -67,3 +67,11 @@ export async function deleteCommentById(commentId) {
         await session.endSession()
     }
 }
+
+export async function getCommentById(commentId) {
+    const character = await db.collection('hp_characters').findOne(
+        { 'comments._idComment': new ObjectId(commentId) },
+        { projection: { 'comments.$': 1 } }// solo el comentario que coincidió
+    )
+    return character?.comments?.[0] ?? null
+}

@@ -13,6 +13,7 @@ export async function getCharacters(filtros = {}) {
     if(filtros?.house) {filter.house = filtros?.house};
     if(filtros?.gender) {filter.gender = filtros?.gender};
     if( filtros?.title ) filter.$text = { $search: filtros?.title };
+    if (filtros?.author) filter.author = filtros.author
     
     try {
 
@@ -47,9 +48,7 @@ export async function getCharacterById(id) {
     try {
         const character = await db.collection('hp_characters').findOne({ _id: new ObjectId(id), eliminado: { $ne: true } });
         // const character = personajes.find(personaje => personaje._id.toString() === id.toString());
-        if (!character) {
-            throw new Error('Personaje no encontrado');
-        }
+        if (!character) return res.status(404).json({ error: 'Personaje no encontrado' })
         return character;
     } catch (error) {
         console.error(error);
@@ -59,7 +58,7 @@ export async function getCharacterById(id) {
 
 
 export async function createCharacter(character) {
-    const nuevo = { ...character, customCharacter: true }
+    const nuevo = { ...character, customCharacter: true, createdAt: new Date() }
     try{
         const res = await db.collection('hp_characters').insertOne(nuevo)
         return { _id: res.insertedId, ...nuevo }
@@ -144,7 +143,7 @@ export async function deleteCharacterPermanentById(id){
 
 export async function getPersonajesPorUsuario(userId) {
     try {
-        return await db.collection('hp_characters').find({ userId: userId }).toArray();
+        return await db.collection('hp_characters').find({ author: userId }).toArray();
     } catch (error) {
         throw new Error('Error al obtener los personajes del usuario');
     }
@@ -156,11 +155,14 @@ export async function characterExists(id) {
     return count > 0
 }
 
+
+
+// ###############comentarios
 export async function saveCharacterCommentById(id, usuario) {
     // _id
     // nombre/email
     // comentario
     const character = await getCharacterById(id)
-    const characterComment = await saveCharacterComment(character._id, usuario)
+    const characterComment = await saveCharacterComment(character._id, usuario) // <---- ESTO VIENE DE SERVICIO DE COMENTARIOS
     return characterComment
 }
