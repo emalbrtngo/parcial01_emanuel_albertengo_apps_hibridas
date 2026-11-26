@@ -2,7 +2,7 @@
 import dotenv from 'dotenv';
 dotenv.config();
 import express from 'express';
-import charactersRoute from './routes/characters.route.js';
+// import charactersRoute from './routes/characters.route.js';
 import apiRoute from './api/routes/routes.api.js';
 import usersRoute from './api/routes/routesUsers.api.js';
 import cors from 'cors';
@@ -15,7 +15,7 @@ app.use( express.urlencoded({ extended: true })) //para que express entienda dat
 app.use(express.json()); //express entendera json
 
 app.use(apiRoute);
-app.use(charactersRoute);
+// app.use(charactersRoute);
 app.use(usersRoute);
 
 

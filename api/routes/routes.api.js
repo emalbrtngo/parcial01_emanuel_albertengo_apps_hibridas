@@ -7,13 +7,13 @@ const router = Router();
 
 router.get('/api/personajes', characterHpController.getCharacters);
 router.get('/api/personajes/:id', characterHpController.getCharacterById);
-router.post('/api/personajes', [validateCharacter, validateToken], characterHpController.saveCharacter);
+router.post('/api/personajes', [validateToken, validateCharacter ], characterHpController.saveCharacter);
 router.delete('/api/personajes/:id', [validateToken], characterHpController.deleteCharacter);
-router.put('/api/personajes/:id', [validateCharacter, validateToken], characterHpController.updateCharacter) // schema completo
+router.put('/api/personajes/:id', [validateToken, validateCharacter ], characterHpController.updateCharacter) // schema completo
 router.patch('/api/personajes/:id', [validateCharacterPartial, validateToken], characterHpController.updateCharacter) // charactersSchema.partial()
 
 //comentarios en personajes
-router.post('/api/personajes/:id/comentarios', [validateComment, validateToken] , characterHpController.saveCharacterComment);
+router.post('/api/personajes/:id/comentarios', [validateToken, validateComment ] , characterHpController.saveCharacterComment);
 router.delete('/api/personajes/comentarios/:commentId', validateToken ,characterHpController.deleteCharacterComment)
 // router.get('/api/personajes/:id/comentarios', characterHpController.getCommentsByCharacterId);
 
